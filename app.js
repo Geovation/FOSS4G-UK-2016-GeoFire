@@ -3,7 +3,7 @@ var GeoFire = require("geofire");
 
 // Initialize Firebase: https://firebase.google.com/docs/server/setup#add_the_sdk
 var config = {
-  serviceAccount: "GeoSeb-ade75b26590c.json",
+  serviceAccount: "serviceAccount.json",
   databaseURL: "https://project-9154129149099457236.firebaseio.com"
 };
 var db = firebase.initializeApp(config).database();
