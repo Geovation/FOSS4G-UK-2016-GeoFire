@@ -10,6 +10,6 @@
   "scripts": {
     "postinstall": "bower install",
     "prestart": "npm install",
-    "start": "http-server -c-1 ./src"
+    "start": "http-server -c-1 -o"
   }
 }
