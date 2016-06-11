@@ -12,14 +12,13 @@
   ± lat <input type="number" min="0" max="90" ng-model="pmlat"/>
   ± lon <input type="number" min="0" max="180" ng-model="pmlon"/>
   amount <input type="number" min="1" max="10000" ng-model="amount"/>
-  <button ng-click="addRamdon(pmlat, pmlon, amount)">add random points</button>
+  <button ng-disabled="left" ng-click="addRamdon(pmlat, pmlon, amount)">add random points</button>
   <span ng-show="left">left {{left}}</span>
 
   <hr>
   <h1>Add Point</h1>
-  lat <input type="number" min="-90" max="90" ng-model="center[0]" />
-  lon <input type="number" min="-180" max="180" ng-model="center[1]" />
-  radius <input type="number" min="0" max="100" ng-model="radius" />
+  lat <input type="number" min="-90" max="90" ng-model="lat" />
+  lon <input type="number" min="-180" max="180" ng-model="lon" />
   <button ng-click="add([lat,lon])">add</button>
 
   <hr>
@@ -33,10 +32,10 @@
 
   <hr>
   <ul>
-    <li ng-repeat="(key,value) in minions"><a href="" ng-click="remove(key)">{{key}} => {{value}}</a></li>
+    <li ng-repeat="(key,value) in points"><a href="" ng-click="remove(key)">{{key}} => {{value}}</a></li>
   </ul>
   <!-- <pre>
-{{minions | json}}
+{{points | json}}
   </pre> -->
 </body>
 </html>

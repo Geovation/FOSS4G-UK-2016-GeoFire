@@ -1,11 +1,13 @@
 (function(){
   angular.module('foss4gapp',[])
   .controller('foss4gctrl', function($scope, $timeout){
-    $scope.minions = {};
+    $scope.points = {};
     $scope.center = [0, 0];
     $scope.radius = 3;
-    $scope.pmlat = 1;
-    $scope.pmlon = 1;
+    $scope.pmlat = 0.1;
+    $scope.pmlon = 0.1;
+    $scope.lat = 0;
+    $scope.lon = 0;
     $scope.left = 0;
     $scope.amount = 100;
     $scope.calculatingLocation = false;
@@ -34,13 +36,12 @@
     function currentLocation() {
       $scope.calculatingLocation = true;
       navigator.geolocation.getCurrentPosition(function(location){
-        $scope.calculatingLocation = false;
+        $timeout(function(){
+          $scope.calculatingLocation = false;
 
-        $scope.center=[location.coords.latitude, location.coords.longitude];
-        update($scope.center, $scope.radius);
-        // $timeout(function(){
-        //
-        // });
+          $scope.center=[location.coords.latitude, location.coords.longitude];
+          update($scope.center, $scope.radius);
+        });
       });
     }
 
@@ -58,20 +59,20 @@
       var onKeyEnteredRegistration = geoQuery.on("key_entered", function(key, location, distance) {
         console.log(key + " entered query at " + location + " (" + distance + " km from center)");
         $timeout(function(){
-          $scope.minions[key]=location;
+          $scope.points[key]=location;
         });
       });
 
       var onKeyExitedRegistration = geoQuery.on("key_exited", function(key, location, distance) {
         console.log(key + " exited query to " + location + " (" + distance + " km from center)");
         $timeout(function(){
-          delete $scope.minions[key];
+          delete $scope.points[key];
         });
       });
 
       var onKeyMovedRegistration = geoQuery.on("key_moved", function(key, location, distance) {
         $timeout(function(){
-          $scope.minions[key]=location;
+          $scope.points[key]=location;
         });
       });
     } // geoFireEvents
@@ -102,6 +103,9 @@
         center: center,
         radius: radius
       });
+
+      $scope.lat = center[0];
+      $scope.lon = center[1];
     }
 
     function addRamdon(pmlat, pmlon, amount) {
