@@ -9,30 +9,29 @@
 </head>
 <body ng-controller="foss4gctrl">
   <h1>Add Random Points</h1>
-  ± lat <input type="number" min="0" max="90" ng-model="pmlat"/>
-  ± lon <input type="number" min="0" max="180" ng-model="pmlon"/>
-  amount <input type="number" min="1" max="100000" ng-model="amount"/>
-  <button ng-disabled="left" ng-click="addRamdon(pmlat, pmlon, amount)">add random points</button>
-  <span ng-show="left">left {{left}}</span>
+  ± lat <input type="number" min="0" max="90" ng-model="deltaLoc[0]"/>
+  ± lon <input type="number" min="0" max="180" ng-model="deltaLoc[1]"/>
+  number of points <input type="number" min="1" max="100000" ng-model="numOfPoints"/>
+  <button ng-disabled="pointsLeft" ng-click="addRamdonPoints(deltaLoc, numOfPoints)">add random points</button>
+  <span ng-show="pointsLeft">pointsLeft {{pointsLeft}}</span>
 
   <hr>
   <h1>Add Point</h1>
-  lat <input type="number" min="-90" max="90" ng-model="lat" />
-  lon <input type="number" min="-180" max="180" ng-model="lon" />
-  <button ng-click="add([lat,lon])">add</button>
+  lat <input type="number" min="-90" max="90" ng-model="newPoint[0]" />
+  lon <input type="number" min="-180" max="180" ng-model="newPoint[1]" />
+  <button ng-click="addPoint(newPoint)">add</button>
 
   <hr>
-  <div>
-    <h1>Geo Query</h1>
-    lat <input type="number" min="-90" max="90" ng-model="center[0]" ng-change="update(center, radius)"/>
-    lon <input type="number" min="-180" max="180" ng-model="center[1]" ng-change="update(center, radius)"/>
-    radius <input type="number" min="0" max="100" ng-model="radius" ng-change="update(center, radius)"/>
-    <button ng-click="currentLocation()" ng-disabled = "calculatingLocation">get current Location</button>
-  </div>
+  <h1>Geo Query</h1>
+  lat <input type="number" min="-90" max="90" ng-model="center[0]" ng-change="updateCriteria(center, radius)"/>
+  lon <input type="number" min="-180" max="180" ng-model="center[1]" ng-change="updateCriteria(center, radius)"/>
+  radius <input type="number" min="0" max="100" ng-model="radius" ng-change="updateCriteria(center, radius)"/>
+  <button ng-click="currentLocation()" ng-disabled = "calculatingLocation">get current Location</button>
 
   <hr>
+  <h1>Points within {{radius}} km of {{center}}</h1>
   <ul>
-    <li ng-repeat="(key,value) in points"><a href="" ng-click="remove(key)">{{key}} => {{value}}</a></li>
+    <li ng-repeat="(key,value) in points"><a href="" ng-click="removePoint(key)">{{key}} => {{value}}</a></li>
   </ul>
   <!-- <pre>
 {{points | json}}

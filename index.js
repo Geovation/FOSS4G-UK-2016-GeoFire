@@ -4,17 +4,15 @@
     $scope.points = {};
     $scope.center = [0, 0];
     $scope.radius = 3;
-    $scope.pmlat = 0.1;
-    $scope.pmlon = 0.1;
-    $scope.lat = 0;
-    $scope.lon = 0;
-    $scope.left = 0;
-    $scope.amount = 100;
+    $scope.deltaLoc = [0.1, 0.1];
+    $scope.newPoint = [0, 0];
+    $scope.pointsLeft = 0;
+    $scope.numOfPoints = 100;
     $scope.calculatingLocation = false;
-    $scope.add = add;
-    $scope.remove = remove;
-    $scope.update = update;
-    $scope.addRamdon = addRamdon;
+    $scope.addPoint = addPoint;
+    $scope.removePoint = removePoint;
+    $scope.updateCriteria = updateCriteria;
+    $scope.addRamdonPoints = addRamdonPoints;
     $scope.currentLocation = currentLocation;
 
     var geoQuery;
@@ -38,9 +36,8 @@
       navigator.geolocation.getCurrentPosition(function(location){
         $timeout(function(){
           $scope.calculatingLocation = false;
-
           $scope.center=[location.coords.latitude, location.coords.longitude];
-          update($scope.center, $scope.radius);
+          updateCriteria($scope.center, $scope.radius);
         });
       });
     }
@@ -77,18 +74,24 @@
       });
     } // geoFireEvents
 
-    function add(loc) {
-      var key = "" + Math.floor(Math.random()*10000000);
-      geoFire.set(key, loc)
+    function addPoint(location) {
+      var key = Math.random().toString().substr(2,6);
+      $scope.pointsLeft += 1;
+
+      geoFire.set(key, location)
         .then(function(){
-          console.log(key + " added at " + loc + " at " + GeoFire.distance(loc, geoQuery.center()) + " km from center");
+          console.log(key + " added at " + location + " at " + GeoFire.distance(location, geoQuery.center()) + " km from center");
+
+          $timeout(function(){
+            $scope.pointsLeft--;
+          });
         })
         .catch(function(error){
           console.log(error);
         });
     }
 
-    function remove(key) {
+    function removePoint(key) {
       geoFire.remove(key)
         .then(function(){
           console.log(key + " deleted");
@@ -98,40 +101,30 @@
         });
     }
 
-    function update(center, radius) {
+    function updateCriteria(center, radius) {
       geoQuery.updateCriteria({
         center: center,
         radius: radius
       });
 
-      $scope.lat = center[0];
-      $scope.lon = center[1];
+      $scope.newPoint = center;
     }
 
-    function addRamdon(pmlat, pmlon, amount) {
-      $scope.left = amount;
+    function addRamdonPoints(deltaLoc, numOfPoints) {
+      $scope.pointsLeft += numOfPoints;
 
-      for (var i=0; i<amount; i++) {
-        var lat = 2 * pmlat * (Math.random() - 1) + $scope.center[0];
-        var lon = 2 * pmlon * (Math.random() - 1) + $scope.center[1];
-        if (lat > 90) lat = 90;
-        if (lat < -90) lat = -90;
-        if (lon > 180) lat = 180;
-        if (lon < -180) lat = -180;
+      for (var i=0; i<numOfPoints; i++) {
+        var center = [0,0];
+        center[0] = 2 * deltaLoc[0] * (Math.random() - 1/2) + $scope.center[0];
+        center[0] = Math.min(90, center[0]);
+        center[0] = Math.max(-90, center[0]);
 
-        var key = "" + Math.floor(Math.random()*10000000);
+        center[1] = 2 * deltaLoc[1] * (Math.random() - 1/2) + $scope.center[1];
+        center[1] = Math.min(180, center[1]);
+        center[1] = Math.max(-180, center[1]);
 
-        console.log("adding " + i + " ==> [" + [lat, lon] + "]");
-        geoFire.set(key, [lat, lon])
-        .then(function(i, lat, lon){return function(){
-          console.log(i + " => [" + [lat, lon] + "] added");
-          $timeout(function(){
-            $scope.left--;
-          });
-        }}(i, lat,lon))
-        .catch(function(error){
-          console.error(error);
-        });
+        console.log("adding " + i + " ot ouf " + numOfPoints + " ==> " + center );
+        addPoint(center);
       }
     }
   });
