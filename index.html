@@ -9,10 +9,10 @@
 </head>
 <body ng-controller="foss4gctrl">
   <h1>Add Random Points</h1>
-  ± lat <input type="number" min="0" max="90" ng-model="deltaLoc[0]"/>
-  ± lon <input type="number" min="0" max="180" ng-model="deltaLoc[1]"/>
+  ± lat <input type="number" min="0" max="90" ng-model="deltaPosition[0]"/>
+  ± lon <input type="number" min="0" max="180" ng-model="deltaPosition[1]"/>
   number of points <input type="number" min="1" max="100000" ng-model="numOfPoints"/>
-  <button ng-disabled="pointsLeft" ng-click="addRamdonPoints(deltaLoc, numOfPoints)">add random points</button>
+  <button ng-disabled="pointsLeft" ng-click="addRamdonPoints(deltaPosition, numOfPoints)">add random points</button>
   <span ng-show="pointsLeft">pointsLeft {{pointsLeft}}</span>
 
   <hr>
@@ -26,7 +26,7 @@
   lat <input type="number" min="-90" max="90" ng-model="center[0]" ng-change="updateCriteria(center, radius)"/>
   lon <input type="number" min="-180" max="180" ng-model="center[1]" ng-change="updateCriteria(center, radius)"/>
   radius <input type="number" min="0" max="100" ng-model="radius" ng-change="updateCriteria(center, radius)"/>
-  <button ng-click="currentLocation()" ng-disabled = "calculatingLocation">get current Location</button>
+  <button ng-click="getCurrentPosition()" ng-disabled = "calculatingPosition">get current Position</button>
 
   <hr>
   <h1>Points within {{radius}} km of {{center}}</h1>

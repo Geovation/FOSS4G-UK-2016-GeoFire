@@ -9,9 +9,9 @@ var config = {
 var db = firebase.initializeApp(config).database();
 
 // GeoFire: https://github.com/firebase/geofire-js/blob/master/docs/reference.md
-var geoFire = new GeoFire(db.ref("locations"));
+var geoFire = new GeoFire(db.ref("positions"));
 
-// location from http://mygeoposition.com/
+// position from http://mygeoposition.com/
 var center = [51.5034070,-0.1275920];
 
 var numOfPoints = 1;

@@ -4,16 +4,16 @@
     $scope.points = {};
     $scope.center = [0, 0];
     $scope.radius = 3;
-    $scope.deltaLoc = [0.1, 0.1];
+    $scope.deltaPosition = [0.1, 0.1];
     $scope.newPoint = [0, 0];
     $scope.pointsLeft = 0;
     $scope.numOfPoints = 100;
-    $scope.calculatingLocation = false;
+    $scope.calculatingPosition = false;
     $scope.addPoint = addPoint;
     $scope.removePoint = removePoint;
     $scope.updateCriteria = updateCriteria;
     $scope.addRamdonPoints = addRamdonPoints;
-    $scope.currentLocation = currentLocation;
+    $scope.getCurrentPosition = getCurrentPosition;
 
     var geoQuery;
 
@@ -27,23 +27,24 @@
     var db = firebase.initializeApp(config).database();
 
     // GeoFire: https://github.com/firebase/geofire-js/blob/master/docs/reference.md
-    var geoFire = new GeoFire(db.ref("locations"));
+    var geoFire = new GeoFire(db.ref("positions"));
 
-    geoFireEvents();
+    _setGeoFireEvents();
+
     ///////////////////////////////////////////////////////////////////////////
-    function currentLocation() {
-      $scope.calculatingLocation = true;
-      navigator.geolocation.getCurrentPosition(function(location){
+    function getCurrentPosition() {
+      $scope.calculatingPosition = true;
+      navigator.geolocation.getCurrentPosition(function(position){
         $timeout(function(){
-          $scope.calculatingLocation = false;
-          $scope.center=[location.coords.latitude, location.coords.longitude];
+          $scope.calculatingPosition = false;
+          $scope.center=[position.coords.latitude, position.coords.longitude];
           updateCriteria($scope.center, $scope.radius);
         });
       });
     }
 
-    function geoFireEvents() {
-      // location from http://mygeoposition.com/
+    function _setGeoFireEvents() {
+      // position from http://mygeoposition.com/
       geoQuery = geoFire.query({
         center: $scope.center,
         radius: $scope.radius
@@ -53,35 +54,35 @@
         console.log("GeoQuery has loaded and fired all other events for initial data");
       });
 
-      var onKeyEnteredRegistration = geoQuery.on("key_entered", function(key, location, distance) {
-        console.log(key + " entered query at " + location + " (" + distance + " km from center)");
+      var onKeyEnteredRegistration = geoQuery.on("key_entered", function(key, position, distance) {
+        console.log(key + " entered query at " + position + " (" + distance + " km from center)");
         $timeout(function(){
-          $scope.points[key]=location;
+          $scope.points[key]=position;
         });
       });
 
-      var onKeyExitedRegistration = geoQuery.on("key_exited", function(key, location, distance) {
-        console.log(key + " exited query to " + location + " (" + distance + " km from center)");
+      var onKeyExitedRegistration = geoQuery.on("key_exited", function(key, position, distance) {
+        console.log(key + " exited query to " + position + " (" + distance + " km from center)");
         $timeout(function(){
           delete $scope.points[key];
         });
       });
 
-      var onKeyMovedRegistration = geoQuery.on("key_moved", function(key, location, distance) {
+      var onKeyMovedRegistration = geoQuery.on("key_moved", function(key, position, distance) {
         $timeout(function(){
-          $scope.points[key]=location;
+          $scope.points[key]=position;
         });
       });
-    } // geoFireEvents
+    } // _setGeoFireEvents
 
-    function addPoint(location) {
+    function addPoint(position) {
       var key = Math.random().toString().substr(2,6);
       $scope.pointsLeft += 1;
 
-      geoFire.set(key, location)
+      geoFire.set(key, position)
         .then(function(){
           $timeout(function(){
-            console.log("(" + $scope.pointsLeft + ")" + key + " added at " + location + " at " + GeoFire.distance(location, geoQuery.center()) + " km from center");
+            console.log("(" + $scope.pointsLeft + ")" + key + " added at " + position + " at " + GeoFire.distance(position, geoQuery.center()) + " km from center");
             $scope.pointsLeft--;
           });
         })
@@ -109,14 +110,14 @@
       $scope.newPoint = center;
     }
 
-    function addRamdonPoints(deltaLoc, numOfPoints) {
+    function addRamdonPoints(deltaPosition, numOfPoints) {
       for (var i=0; i<numOfPoints; i++) {
         var center = [0,0];
-        center[0] = 2 * deltaLoc[0] * (Math.random() - 1/2) + $scope.center[0];
+        center[0] = 2 * deltaPosition[0] * (Math.random() - 1/2) + $scope.center[0];
         center[0] = Math.min(90, center[0]);
         center[0] = Math.max(-90, center[0]);
 
-        center[1] = 2 * deltaLoc[1] * (Math.random() - 1/2) + $scope.center[1];
+        center[1] = 2 * deltaPosition[1] * (Math.random() - 1/2) + $scope.center[1];
         center[1] = Math.min(180, center[1]);
         center[1] = Math.max(-180, center[1]);
 
