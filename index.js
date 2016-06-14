@@ -80,9 +80,8 @@
 
       geoFire.set(key, location)
         .then(function(){
-          console.log(key + " added at " + location + " at " + GeoFire.distance(location, geoQuery.center()) + " km from center");
-
           $timeout(function(){
+            console.log("(" + $scope.pointsLeft + ")" + key + " added at " + location + " at " + GeoFire.distance(location, geoQuery.center()) + " km from center");
             $scope.pointsLeft--;
           });
         })
@@ -111,8 +110,6 @@
     }
 
     function addRamdonPoints(deltaLoc, numOfPoints) {
-      $scope.pointsLeft += numOfPoints;
-
       for (var i=0; i<numOfPoints; i++) {
         var center = [0,0];
         center[0] = 2 * deltaLoc[0] * (Math.random() - 1/2) + $scope.center[0];

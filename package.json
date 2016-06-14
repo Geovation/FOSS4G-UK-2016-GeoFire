@@ -9,7 +9,7 @@
   "scripts": {
     "app": "node app",
     "prestart": "npm install",
-    "start": "http-server -c-1 -o"
+    "start": "http-server -c-1 -a localhost -o"
   },
   "dependencies": {
     "angular": "^1.5.6",
