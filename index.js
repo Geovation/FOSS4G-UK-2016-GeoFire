@@ -21,8 +21,7 @@
     var config = {
       apiKey: "AIzaSyA8MbZAP3FFBsSyModPezSvts51l8BPXKA",
       authDomain: "project-9154129149099457236.firebaseapp.com",
-      databaseURL: "https://project-9154129149099457236.firebaseio.com",
-      storageBucket: "project-9154129149099457236.appspot.com",
+      databaseURL: "https://project-9154129149099457236.firebaseio.com"
     };
     var db = firebase.initializeApp(config).database();
 
