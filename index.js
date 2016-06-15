@@ -25,6 +25,17 @@
     };
     var db = firebase.initializeApp(config).database();
 
+
+    // db.ref("test").set("that's my test").then(function(){
+    //   console.log("success");
+    // });
+
+    db.ref("test").on("value", function(data){
+      $timeout(function(){
+        $scope.test=data.val();
+      });
+    });
+
     // GeoFire: https://github.com/firebase/geofire-js/blob/master/docs/reference.md
     var geoFire = new GeoFire(db.ref("positions"));
 
